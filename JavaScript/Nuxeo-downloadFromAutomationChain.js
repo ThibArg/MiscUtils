@@ -3,23 +3,28 @@
 	This utility allows to download a binary returned by an Automation Chain in Nuxeo.
 	First use case was a chain that queries for document, group them and zip them.
 	Note: If you are Nuxeo developer and are using JSF for your UI, you don't need this,
-	just add the operation User Interface > Download File at the end of your chain
+	just add the operation User Interface > Download File at the end of your chain.
 
-	The problem here is that Automaiton can only be called in a POST request, so using
-	the <a></a> element will not work.
+	The problem here is that Automation can only be called in a POST request, so using
+	the <a href="/nuxeo/site/automation/myChain"></a> element will not work.
 
-	The solution here will what in what can be called "modern browsers", with 1-2 explanations:
-		-> We can't use jQuery, because we need to handle the 'blob' responseType and it looks
-		   like jQuery is not ready for this => we must use the XMLHttpRequest object
-		-> We can't nuxeo nuxeo.js (the JavaScript client of Nuxeo) for the same reason: It uses
+	The solution here will work in what can be called "modern browsers", and here are
+	some explanations:
+		-> We can't use jQuery.ajax(), because we need to handle the 'blob' responseType
+		   and it looks like jQuery is not ready for this => we must use the XMLHttpRequest
+		   object.
+		-> We can't use nuxeo.js (the JavaScript client of Nuxeo) for the same reason: It uses
 		   jQuery, at least in current version(2015-07-17)
 	
-	Also some other important thinsg to understand:
+	Also some other important things to notice:
 		- The code assume the client is already connected to nuxeo
 				=> no authentication
+
 		- It also assumes the context path is "/nuxeo"
 				=> The URL is hard coded: /nuxeo/site/automation/chainId
 				=> To be changed if your context oath is different (this is changed in nuxeo.conf)
+
+		- Error handling is very poor. We recommend you just get this code and adapt it.
 
 	Thanks to Jonathan Amend on StackOverflow:
 		http://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post
@@ -29,7 +34,7 @@
 /*	downloadFromChain()
 
 	input: String, ID or path of a document in the repository.
-		   For chains which don't expect an input (start with a Query for example), use "" or null
+		   For chains which don't expect an input (start with a Query for example), use "" or null.
 
 	chainParams and chainContext must be of type object, not string.
 
