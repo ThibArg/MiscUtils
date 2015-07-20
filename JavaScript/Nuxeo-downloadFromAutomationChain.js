@@ -5,6 +5,13 @@
 	Note: If you are Nuxeo developer and are using JSF for your UI, you don't need this,
 	just add the operation User Interface > Download File at the end of your chain.
 
+	WARNING * * * * * WARNING * * * * * WARNING * * * * * WARNING * * * * * WARNING
+	-> The code assumes the client is already connected to nuxeo
+	-> The code assumes it is a nuxeo server which served the page (no CORS)
+	-> The code assumes the context path is "/nuxeo"
+			(The URL is hard coded: /nuxeo/api/v1/automation/chainId)
+	-> Error handling is very poor. We recommend you just get this code and adapt it.
+ 
 	The problem here is that Automation can only be called in a POST request, so using
 	the <a href="/nuxeo/site/automation/myChain"></a> element will not work.
 
@@ -15,16 +22,6 @@
 		   object.
 		-> We can't use nuxeo.js (the JavaScript client of Nuxeo) for the same reason: It uses
 		   jQuery, at least in current version(2015-07-17)
-	
-	Also some other important things to notice:
-		- The code assume the client is already connected to nuxeo
-				=> no authentication
-
-		- It also assumes the context path is "/nuxeo"
-				=> The URL is hard coded: /nuxeo/site/automation/chainId
-				=> To be changed if your context oath is different (this is changed in nuxeo.conf)
-
-		- Error handling is very poor. We recommend you just get this code and adapt it.
 
 	Thanks to Jonathan Amend on StackOverflow:
 		http://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post
@@ -48,7 +45,7 @@ function downloadFromChain(chainId, input, chainParams, chainContext) {
 
 	var url, xhrBody, xhr;
 
-	url = "/nuxeo/site/automation/" + chainId;
+	url = "/nuxeo/api/v1/automation/" + chainId;
 
 	// To be passed to the XMLHttpRequest, expected by Nuxeo
 	// If there is no input (id or path of an existing document), it must be defined at all
